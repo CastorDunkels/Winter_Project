@@ -13,21 +13,28 @@ float Gravity = 0;
 float speed = 6;
 float Acceleration = 0.6f;
 
-Rectangle playerRect = new Rectangle(playerX, playerY, 50, 100);
+Rectangle playerRect = new Rectangle(playerX, playerY, 50, 20);
 
 
 while (Raylib.WindowShouldClose() == false)
 {
 
 
-    if (Raylib.IsKeyDown(KeyboardKey.KEY_D)) playerX += speed;
+    if (Raylib.IsKeyDown(KeyboardKey.KEY_D)){
+        if (GROUND - playerY < 1){ //detta kollar om man är på marken eller inte så man inte kan fortsätta gå runt när man är i luften
+            playerX += speed;
+        } 
+    }
     if (Raylib.IsKeyDown(KeyboardKey.KEY_A)){ 
-        if (GROUND - playerY < 1){   //detta kollar om man är på marken eller inte så man inte kan fortsätta gå runt när man är i luften
-        playerX -= speed;
+        if (GROUND - playerY < 1){           
+            playerX -= speed;
 
         }
     }
-    if (Raylib.IsKeyDown(KeyboardKey.KEY_SPACE)) Gravity = -4; //detta gör så att när man trycker på space så blir gravitationen minus så att man går uppot som är som att hoppa
+    if (Raylib.IsKeyDown(KeyboardKey.KEY_SPACE)) 
+    if (GROUND - playerY < 1){   //detta gör så att man inte kan hoppa mer än när man är på marken
+    Gravity = -4; //detta gör så att när man trycker på space så blir gravitationen minus så att man går uppot som är som att hoppa
+    }
     playerY += Gravity;
     if (playerY > GROUND)  //detta gör så att gubben inte kan åka under marken
     {
