@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.IO;
+using System;
 using Raylib_cs;
 
 Raylib.InitWindow(800, 600, "Game");
@@ -8,42 +9,52 @@ const int GROUND = 580;
 float playerX = 10;
 float playerY = GROUND;
 float speed = 6;
-float WalkingSpeed = 0; //ska göra något med denna senare
+float WalkingSpeed = 0;
 float FlyingSpeed = 0;
 float Gravity = 0;
-float Jump = -6;
-
+float Jump = -10;
 float Acceleration = 0.6f;
+float Direction = 0;
+float leftWall = 0;
+float jeffX = 500;
+float jeffY = 0;
 
 Rectangle playerRect = new Rectangle(playerX, playerY, 50, 20);
-
+Rectangle jeff = new Rectangle(jeffX, jeffY, 100, 500);
 
 while (Raylib.WindowShouldClose() == false)
 {
-
-
+    if (playerX > 600) {
+        jeffX -= speed;
+    }
     if (Raylib.IsKeyDown(KeyboardKey.KEY_D))
     {
-        if (GROUND - playerY < 0.1)
+        Direction = 1;
+        if (GROUND - playerY < 1)
         { //detta kollar om man är på marken eller inte så man inte kan fortsätta gå runt när man är i luften
             playerX += speed;
 
-            WalkingSpeed = speed;
+            WalkingSpeed = speed * Direction;
 
         }
+
     }
     if (Raylib.IsKeyDown(KeyboardKey.KEY_A))  //göra en metod för att gå kanske
     {
-        if (GROUND - playerY < 0.1)
+        Direction = -1;
+        if (GROUND - playerY < 1)
         {
             playerX -= speed;
 
-            WalkingSpeed = -speed;
+            WalkingSpeed = speed * Direction;
 
         }
+
     }
+
+
     if (Raylib.IsKeyDown(KeyboardKey.KEY_SPACE))
-        if (GROUND - playerY < 0.1)
+        if (GROUND - playerY < 1)
         {   //detta gör så att man inte kan hoppa mer än när man är på marken
             Gravity = Jump; //detta gör så att när man trycker på space så blir gravitationen minus så att man går uppot som är som att hoppa
             FlyingSpeed = WalkingSpeed;
@@ -62,6 +73,13 @@ while (Raylib.WindowShouldClose() == false)
     {
         playerY = GROUND;
     }
+    if (playerX < leftWall + 5)
+    {
+        playerX = leftWall;
+    }
+    if (playerX > Raylib.GetScreenWidth() - playerRect.width){
+        playerX = Raylib.GetScreenWidth();
+    }
 
     if (playerY == GROUND)
     {
@@ -74,11 +92,14 @@ while (Raylib.WindowShouldClose() == false)
 
     playerRect.y = playerY;  //detta gör så att visuella delen och modellen är separata
     playerRect.x = playerX;
+    jeff.x = jeffX;
+    jeff.y = jeffY;
 
     Raylib.BeginDrawing();
 
     Raylib.ClearBackground(Color.SKYBLUE);
     Raylib.DrawRectangleRec(playerRect, Color.GOLD);
+    Raylib.DrawRectangleRec(jeff, Color.BLACK);
 
     Console.WriteLine(WalkingSpeed);
 
