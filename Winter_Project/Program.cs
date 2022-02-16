@@ -24,7 +24,8 @@ Rectangle jeff = new Rectangle(jeffX, jeffY, 100, 500);
 
 while (Raylib.WindowShouldClose() == false)
 {
-    if (playerX > 600) {
+    if (playerX > 600)
+    {
         jeffX -= speed;
     }
     if (Raylib.IsKeyDown(KeyboardKey.KEY_D))
@@ -58,6 +59,7 @@ while (Raylib.WindowShouldClose() == false)
         {   //detta gör så att man inte kan hoppa mer än när man är på marken
             Gravity = Jump; //detta gör så att när man trycker på space så blir gravitationen minus så att man går uppot som är som att hoppa
             FlyingSpeed = WalkingSpeed;
+            WalkingSpeed = 0;
 
         }
 
@@ -77,7 +79,8 @@ while (Raylib.WindowShouldClose() == false)
     {
         playerX = leftWall;
     }
-    if (playerX > Raylib.GetScreenWidth() - playerRect.width){
+    if (playerX > Raylib.GetScreenWidth() - playerRect.width)
+    {
         playerX = Raylib.GetScreenWidth();
     }
 
