@@ -6,7 +6,7 @@ Raylib.SetTargetFPS(30);
 
 const int GROUND = 580;
 float playerHealth = 3;
-float playerHit = playerHealth--;
+//float playerHit = playerHealth--;
 float playerX = 400;
 float playerY = GROUND;
 float speed = 6;
@@ -95,7 +95,7 @@ while (Raylib.WindowShouldClose() == false)
 
     if (enemyX < playerX + 50 && enemyX > playerX - 50 && enemyY <= playerY + 25) //kollar om enemy colliderar med player för att se om hp ska minskas
     {
-        playerHealth = playerHit;
+        playerHealth--;
     }
     else
     {
@@ -103,7 +103,8 @@ while (Raylib.WindowShouldClose() == false)
     }
     if (playerHealth <= 0)
     {
-
+        playerX = playerX + 1000000;
+        enemyX = enemyX + 1000000;
         Raylib.DrawText("YOU DIED", 250, 250, 60, Color.RED);
     }
     Raylib.DrawText("Health: " + playerHealth, 40, 20, 30, Color.BLACK);  //skriver ut hur mycket hp man har
@@ -124,9 +125,9 @@ while (Raylib.WindowShouldClose() == false)
 
     Raylib.BeginDrawing();
 
-    Raylib.ClearBackground(Color.SKYBLUE);
-    Raylib.DrawRectangleRec(playerRect, Color.GOLD);
-    Raylib.DrawRectangleRec(enemy, Color.BLACK);
+    Raylib.ClearBackground(Color.BLACK);
+    Raylib.DrawRectangleRec(playerRect, Color.SKYBLUE);
+    Raylib.DrawRectangleRec(enemy, Color.RED);
 
     Raylib.EndDrawing();
 }
