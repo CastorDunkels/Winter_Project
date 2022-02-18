@@ -6,7 +6,10 @@ Raylib.InitWindow(800, 600, "Game");
 Raylib.SetTargetFPS(30);
 
 const int GROUND = 580;
-float playerX = 10;
+/*float playerHealth = 3;
+float playerLastHit;
+float millis = 50;*/
+float playerX = 400;
 float playerY = GROUND;
 float speed = 6;
 float WalkingSpeed = 0;
@@ -16,18 +19,26 @@ float Jump = -10;
 float Acceleration = 0.6f;
 float Direction = 0;
 float leftWall = 0;
-float jeffX = 500;
-float jeffY = 0;
+float rightWall = 750;
+float enemyX = 500;
+float enemyY = GROUND;
 
 Rectangle playerRect = new Rectangle(playerX, playerY, 50, 20);
-Rectangle jeff = new Rectangle(jeffX, jeffY, 100, 500);
+Rectangle enemy = new Rectangle(enemyX, enemyY, 40, 20);
 
 while (Raylib.WindowShouldClose() == false)
 {
-    if (playerX > 600)
+    if (playerX < enemyX)
     {
-        jeffX -= speed;
+        enemyX -= speed / 2;  //gör så att fienden går mot spelaren beroende på om man har högre x värde eller mindre x värde
     }
+    if (playerX > enemyX)
+    {
+        enemyX += speed / 2;
+    }
+    
+
+
     if (Raylib.IsKeyDown(KeyboardKey.KEY_D))
     {
         Direction = 1;
@@ -79,12 +90,24 @@ while (Raylib.WindowShouldClose() == false)
     {
         playerX = leftWall;
     }
-    if (playerX > Raylib.GetScreenWidth() - playerRect.width)
+    if (playerX > rightWall)
     {
-        playerX = Raylib.GetScreenWidth();
+        playerX = rightWall;
     }
 
-    if (playerY == GROUND)
+    /*if(millis) > playerLastHit + 1000){
+
+        float newPlayerX;
+        float newPlayerY;
+
+        playerhealth = playerhealth-1;
+        playerlasthit = millis();
+        newplayerX = playerX + 30;
+
+    } */
+
+
+    if (playerY == GROUND) 
     {
         Gravity = 0;
     }
@@ -95,14 +118,14 @@ while (Raylib.WindowShouldClose() == false)
 
     playerRect.y = playerY;  //detta gör så att visuella delen och modellen är separata
     playerRect.x = playerX;
-    jeff.x = jeffX;
-    jeff.y = jeffY;
+    enemy.x = enemyX;
+    enemy.y = enemyY;
 
     Raylib.BeginDrawing();
 
     Raylib.ClearBackground(Color.SKYBLUE);
     Raylib.DrawRectangleRec(playerRect, Color.GOLD);
-    Raylib.DrawRectangleRec(jeff, Color.BLACK);
+    Raylib.DrawRectangleRec(enemy, Color.BLACK);
 
     Console.WriteLine(WalkingSpeed);
 
