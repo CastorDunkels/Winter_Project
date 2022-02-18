@@ -1,14 +1,12 @@
-﻿using System.IO;
-using System;
+﻿using System;
 using Raylib_cs;
 
 Raylib.InitWindow(800, 600, "Game");
 Raylib.SetTargetFPS(30);
 
 const int GROUND = 580;
-/*float playerHealth = 3;
-float playerLastHit;
-float millis = 50;*/
+float playerHealth = 3;
+float playerHit = playerHealth--;
 float playerX = 400;
 float playerY = GROUND;
 float speed = 6;
@@ -21,10 +19,10 @@ float Direction = 0;
 float leftWall = 0;
 float rightWall = 750;
 float enemyX = 500;
-float enemyY = GROUND;
+float enemyY = GROUND - 20;
 
 Rectangle playerRect = new Rectangle(playerX, playerY, 50, 20);
-Rectangle enemy = new Rectangle(enemyX, enemyY, 40, 20);
+Rectangle enemy = new Rectangle(enemyX, enemyY, 40, 40);
 
 while (Raylib.WindowShouldClose() == false)
 {
@@ -36,7 +34,7 @@ while (Raylib.WindowShouldClose() == false)
     {
         enemyX += speed / 2;
     }
-    
+
 
 
     if (Raylib.IsKeyDown(KeyboardKey.KEY_D))
@@ -78,11 +76,11 @@ while (Raylib.WindowShouldClose() == false)
 
     if (playerY - GROUND < -20)
     {
-        playerX += FlyingSpeed;
+        playerX += FlyingSpeed; //detta gör så att man håller kvar sin speed när man hoppar
     }
 
     playerY += Gravity;
-    if (playerY > GROUND)  //detta gör så att gubben inte kan åka under marken
+    if (playerY > GROUND)  //detta gör så att gubben inte kan åka under marken eller gå ut åt sidorna
     {
         playerY = GROUND;
     }
@@ -95,19 +93,22 @@ while (Raylib.WindowShouldClose() == false)
         playerX = rightWall;
     }
 
-    /*if(millis) > playerLastHit + 1000){
+    if (enemyX < playerX + 50 && enemyX > playerX - 50 && enemyY <= playerY + 25) //kollar om enemy colliderar med player för att se om hp ska minskas
+    {
+        playerHealth = playerHit;
+    }
+    else
+    {
+        Console.WriteLine(playerHealth + 100);
+    }
+    if (playerHealth <= 0)
+    {
 
-        float newPlayerX;
-        float newPlayerY;
+        Raylib.DrawText("YOU DIED", 250, 250, 60, Color.RED);
+    }
+    Raylib.DrawText("Health: " + playerHealth, 40, 20, 30, Color.BLACK);  //skriver ut hur mycket hp man har
 
-        playerhealth = playerhealth-1;
-        playerlasthit = millis();
-        newplayerX = playerX + 30;
-
-    } */
-
-
-    if (playerY == GROUND) 
+    if (playerY == GROUND)
     {
         Gravity = 0;
     }
@@ -126,8 +127,6 @@ while (Raylib.WindowShouldClose() == false)
     Raylib.ClearBackground(Color.SKYBLUE);
     Raylib.DrawRectangleRec(playerRect, Color.GOLD);
     Raylib.DrawRectangleRec(enemy, Color.BLACK);
-
-    Console.WriteLine(WalkingSpeed);
 
     Raylib.EndDrawing();
 }
