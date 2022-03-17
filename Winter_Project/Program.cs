@@ -21,18 +21,55 @@ float rightWall = 750;
 float enemyX = 500;
 float enemyY = GROUND - 20;
 float enemyHealth = 5;
+double enemyImmunity = 0;
 double dmgTimestamp = 0;
 double attackTime = 0;
+double attackTimeRight = 0;
+double attackTimeLeft = 0;
 bool attackLeft = false;
 bool attackRight = false;
 
 Rectangle playerRect = new Rectangle(playerX, playerY, 50, 20);
 Rectangle enemy = new Rectangle(enemyX, enemyY, 40, 40);
-Rectangle playerWeapon = new Rectangle(0, 0, 100, 2);
+Rectangle playerWeapon = new Rectangle(0, 0, 50, 2);
 
+bool playerHitbox()
+{
+    if (enemyX < playerX + 45 && enemyX > playerX - 45 && enemyY <= playerY + 25) //kollar om enemy colliderar med player för att sen returna false eller true
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool enemyHitbox()
+{
+    //if(Raylib.GetTime() - attackTime > 1 || attackTime == 0){
+    if (playerWeapon.x < enemyX + 45 && playerWeapon.x > enemyX - 45 && playerWeapon.y <= enemyY + 45 && playerWeapon.y >= enemyY - 10) //kollar om fienden är i vapnets hitbox för att returna false eller true
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+    //}
+}
+
+void dealDamage()
+{
+    if (Raylib.GetTime() - enemyImmunity > 1 || enemyImmunity == 0)
+    {
+        enemyHealth--;
+        enemyImmunity = Raylib.GetTime();
+    }
+}
 void takeDamage()
 {
-    if (Raylib.GetTime() - dmgTimestamp > 0.5 || dmgTimestamp == 0)
+    if (Raylib.GetTime() - dmgTimestamp > 0.7 || dmgTimestamp == 0)
     {
         playerHealth--;
         dmgTimestamp = Raylib.GetTime();
@@ -41,34 +78,49 @@ void takeDamage()
 
 void attack(int attackDirection)
 {
-    attackTime = Raylib.GetTime();
-    if (attackDirection == 1)
+    if (Raylib.GetTime() - attackTime > 1 || attackTime == 0)
     {
-        attackLeft = true;
+        if (attackDirection == 1)
+        {
+            attackTimeLeft = Raylib.GetTime();
+            attackTime = attackTimeLeft;
+            attackLeft = true;
+            attackRight = false;
+        }
+        if (attackDirection == 2)
+        {
+            attackTimeRight = Raylib.GetTime();
+            attackTime = attackTimeRight;
+            attackRight = true;
+            attackLeft = false;
+        }
     }
-    if (attackDirection == 2)
-    {
-        attackRight = true;
-    }
+
 }
+
 void drawWeapon()
 {
-    //if (Raylib.GetTime() - attackTime > 1 || attackTime == 0)
-    //{
+    if (Raylib.GetTime() - attackTimeRight < 0.1)
+    {
 
-    if (attackLeft)
-    {
-        playerWeapon.y = playerY + 10;
-        playerWeapon.x = playerX - 100;
-        Raylib.DrawRectangleRec(playerWeapon, Color.WHITE);
+
+        if (attackRight)
+        {
+            playerWeapon.y = playerY + 10;
+            playerWeapon.x = playerX + 50;
+            Raylib.DrawRectangleRec(playerWeapon, Color.WHITE);
+        }
     }
-    if (attackRight)
+    if (Raylib.GetTime() - attackTimeLeft < 0.1)
     {
-        playerWeapon.y = playerY + 10;
-        playerWeapon.x = playerX + 50;
-        Raylib.DrawRectangleRec(playerWeapon, Color.WHITE);
+        if (attackLeft)
+        {
+            playerWeapon.y = playerY + 10;
+            playerWeapon.x = playerX - 50;
+            Raylib.DrawRectangleRec(playerWeapon, Color.WHITE);
+        }
     }
-    //}
+
 }
 
 while (Raylib.WindowShouldClose() == false)
@@ -138,10 +190,11 @@ while (Raylib.WindowShouldClose() == false)
         playerX = rightWall;
     }
 
-    if (enemyX < playerX + 45 && enemyX > playerX - 45 && enemyY <= playerY + 25) //kollar om enemy colliderar med player för att se om hp ska minskas
+    if (playerHitbox())
     {
         takeDamage();
     }
+
     if (playerHealth <= 0)
     {
         playerX = playerX + 1000000;
@@ -149,11 +202,16 @@ while (Raylib.WindowShouldClose() == false)
         Raylib.DrawText("YOU DIED", 250, 250, 60, Color.RED);
     }
     Raylib.DrawText("Health: " + playerHealth, 40, 20, 30, Color.RED);  //skriver ut hur mycket hp man har
+    Raylib.DrawText("Enemy Health" + enemyHealth, 200, 20, 30, Color.BLUE);
 
-    //if(enemyX = playerWeapon.x)
+    if (enemyHitbox())
+    {
+        dealDamage();
+    }
     if (enemyHealth <= 0)
     {
-
+        enemyX = 23948213;
+        enemyY = 11101281;
     }
 
     if (playerY == GROUND)
