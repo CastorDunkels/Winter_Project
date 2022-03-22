@@ -45,7 +45,7 @@ Rectangle playerRect = new Rectangle(playerX, playerY, PLAYERWIDTH, PLAYERHEIGHT
 Rectangle enemy = new Rectangle(enemyX, enemyY, ENEMTWIDTH, ENEMYHEIGHT);
 Rectangle playerWeapon = new Rectangle(0, 0, WEAPONWIDTH, WEAPONHEIGHT);
 
-bool isWeaponOutRight()
+bool isWeaponOutRight() //kollar om du attackerade nog länge sen för att attackera igen
 {
     if (Raylib.GetTime() - attackTimeRight < 0.1)
     {
@@ -58,9 +58,9 @@ bool isWeaponOutRight()
     }
     return false;
 }
-bool isWeaponOutLeft()
+bool isWeaponOutLeft()   //samma som förra men åt vänster
 {
-    if (Raylib.GetTime() - attackTimeLeft < 0.1)
+    if (Raylib.GetTime() - attackTimeLeft < 0.1) 
     {
         if (attackLeft)
         {
@@ -70,7 +70,7 @@ bool isWeaponOutLeft()
     return false;
 }
 
-bool playerHitbox()
+bool playerHitbox()  //kollar din hitbox för att se om den är i fiendens eller inte
 {
     float playerX2 = playerX + PLAYERWIDTH;
     float playerY2 = playerY + PLAYERHEIGHT;
@@ -87,7 +87,7 @@ bool playerHitbox()
     }
 }
 
-bool enemyHitbox()
+bool enemyHitbox() //kollar fiende hitboxes för att se om man skadar fienden med vapnet
 {
     float weaponX1;
     float weaponY1 = playerY + WEAPONOFFSET;
@@ -106,7 +106,7 @@ bool enemyHitbox()
     if ((weaponX1 >= enemyX && weaponX1 < enemyX2 && weaponY1 >= enemyY && weaponY1 <= enemyY2) ||
     (weaponX2 >= enemyX && weaponX2 < enemyX2 && weaponY1 >= enemyY && weaponY1 <= enemyY2) ||
     (weaponX1 >= enemyX && weaponX1 < enemyX2 && weaponY2 >= enemyY && weaponY2 <= enemyY2) ||
-    (weaponX2 >= enemyX && weaponX2 < enemyX2 && weaponY2 >= enemyY && weaponY2 <= enemyY2)) //kollar om fienden är i vapnets hitbox för att returna false eller true
+    (weaponX2 >= enemyX && weaponX2 < enemyX2 && weaponY2 >= enemyY && weaponY2 <= enemyY2)) 
     {
         return true;
     }
@@ -118,7 +118,7 @@ bool enemyHitbox()
 
 void dealDamage()
 {
-    if (Raylib.GetTime() - enemyImmunity > 1 || enemyImmunity == 0)
+    if (Raylib.GetTime() - enemyImmunity > 1 || enemyImmunity == 0)  //kollar om det gått nog lång tid sen fienden tog dmg senaste gången
     {
         enemyHealth--;
         enemyImmunity = Raylib.GetTime();
@@ -126,16 +126,16 @@ void dealDamage()
 }
 void takeDamage()
 {
-    if (Raylib.GetTime() - dmgTimestamp > 0.7 || dmgTimestamp == 0)
+    if (Raylib.GetTime() - dmgTimestamp > 0.7 || dmgTimestamp == 0) //kollar om det gått nog lång tid sen du tog dmg senaste gången
     {
         playerHealth--;
         dmgTimestamp = Raylib.GetTime();
     }
 }
 
-void attack(int attackDirection)
+void attack(int attackDirection) //gör själva attacken som har kollision
 {
-    if (Raylib.GetTime() - attackTime > 1 && playerY >= GROUND || attackTime == 0 && playerY >= GROUND)
+    if (Raylib.GetTime() - attackTime > 1 && playerY >= GROUND || attackTime == 0 && playerY >= GROUND) //kollar om det har gått nog lång tid sen man attackerade senast och om man är på marken 
     {
         if (attackDirection == 1)
         {
@@ -155,7 +155,7 @@ void attack(int attackDirection)
 
 }
 
-void drawWeapon()
+void drawWeapon() //kollar vilket håll som den ska rita sen ritas vapnet ut 
 {
     if (isWeaponOutRight())
     {
@@ -199,8 +199,7 @@ while (Raylib.WindowShouldClose() == false)
         }
 
     }
-    if (Raylib.IsKeyDown(KeyboardKey.KEY_A))  //göra en metod för att gå kanske
-    {
+    if (Raylib.IsKeyDown(KeyboardKey.KEY_A))  {
         Direction = -1;
         if (GROUND - playerY < 1)
         {
@@ -252,7 +251,7 @@ while (Raylib.WindowShouldClose() == false)
         enemyX = enemyX + 1000000;
         Raylib.DrawText("YOU DIED", 250, 250, 60, Color.RED);
     }
-    Raylib.DrawText("Health: " + playerHealth, 40, 20, 30, Color.SKYBLUE);  //skriver ut hur mycket hp man har
+    Raylib.DrawText("Health: " + playerHealth, 40, 20, 30, Color.SKYBLUE);  
     Raylib.DrawText(enemyName + ": " + enemyHealth, 500, 20, 30, Color.RED);
 
     if (enemyHitbox() && (isWeaponOutLeft() || isWeaponOutRight()))
@@ -286,7 +285,7 @@ while (Raylib.WindowShouldClose() == false)
         attack(1);
     }
 
-    playerRect.y = playerY;  //detta gör så att visuella delen och modellen är separata
+    playerRect.y = playerY;  
     playerRect.x = playerX;
     enemy.x = enemyX;
     enemy.y = enemyY;
