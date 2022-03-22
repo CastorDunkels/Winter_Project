@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
 using System;
 using Raylib_cs;
 
@@ -36,11 +36,17 @@ double attackTimeLeft = 0;
 bool attackLeft = false;
 bool attackRight = false;
 
+Random rnd = new Random();
+List<string> enemyNames = new List<string>() { "Gilbert", "Bob the builder", "Jeff", "Bosse" };
+int index = rnd.Next(enemyNames.Count);
+string enemyName = enemyNames[index];
+
 Rectangle playerRect = new Rectangle(playerX, playerY, PLAYERWIDTH, PLAYERHEIGHT);
 Rectangle enemy = new Rectangle(enemyX, enemyY, ENEMTWIDTH, ENEMYHEIGHT);
 Rectangle playerWeapon = new Rectangle(0, 0, WEAPONWIDTH, WEAPONHEIGHT);
 
-bool isWeaponOutRight(){
+bool isWeaponOutRight()
+{
     if (Raylib.GetTime() - attackTimeRight < 0.1)
     {
 
@@ -52,7 +58,8 @@ bool isWeaponOutRight(){
     }
     return false;
 }
-bool isWeaponOutLeft(){
+bool isWeaponOutLeft()
+{
     if (Raylib.GetTime() - attackTimeLeft < 0.1)
     {
         if (attackLeft)
@@ -82,12 +89,14 @@ bool playerHitbox()
 
 bool enemyHitbox()
 {
-    float weaponX1; 
+    float weaponX1;
     float weaponY1 = playerY + WEAPONOFFSET;
-    if(attackRight){
+    if (attackRight)
+    {
         weaponX1 = playerX + WEAPONWIDTH;
     }
-    else{
+    else
+    {
         weaponX1 = playerX - WEAPONWIDTH;
     }
     float weaponX2 = weaponX1 + WEAPONWIDTH;
@@ -100,11 +109,11 @@ bool enemyHitbox()
     (weaponX2 >= enemyX && weaponX2 < enemyX2 && weaponY2 >= enemyY && weaponY2 <= enemyY2)) //kollar om fienden är i vapnets hitbox för att returna false eller true
     {
         return true;
-        }
-        else
-        {
+    }
+    else
+    {
         return false;
-        }
+    }
 }
 
 void dealDamage()
@@ -126,7 +135,7 @@ void takeDamage()
 
 void attack(int attackDirection)
 {
-    if (Raylib.GetTime() - attackTime > 1 || attackTime == 0)
+    if (Raylib.GetTime() - attackTime > 1 && playerY >= GROUND || attackTime == 0 && playerY >= GROUND)
     {
         if (attackDirection == 1)
         {
@@ -148,13 +157,15 @@ void attack(int attackDirection)
 
 void drawWeapon()
 {
-    if(isWeaponOutRight()){
+    if (isWeaponOutRight())
+    {
         playerWeapon.y = playerY + WEAPONOFFSET;
         playerWeapon.x = playerX + PLAYERWIDTH;
         Raylib.DrawRectangleRec(playerWeapon, Color.WHITE);
     }
 
-    if(isWeaponOutLeft()){
+    if (isWeaponOutLeft())
+    {
         playerWeapon.y = playerY + WEAPONOFFSET;
         playerWeapon.x = playerX - WEAPONWIDTH;
         Raylib.DrawRectangleRec(playerWeapon, Color.WHITE);
@@ -242,7 +253,7 @@ while (Raylib.WindowShouldClose() == false)
         Raylib.DrawText("YOU DIED", 250, 250, 60, Color.RED);
     }
     Raylib.DrawText("Health: " + playerHealth, 40, 20, 30, Color.SKYBLUE);  //skriver ut hur mycket hp man har
-    Raylib.DrawText("Enemy Health: " + enemyHealth, 200, 20, 30, Color.RED);
+    Raylib.DrawText(enemyName + ": " + enemyHealth, 500, 20, 30, Color.RED);
 
     if (enemyHitbox() && (isWeaponOutLeft() || isWeaponOutRight()))
     {
@@ -252,6 +263,7 @@ while (Raylib.WindowShouldClose() == false)
     {
         enemyX = 23948213;
         enemyY = 11101281;
+        Raylib.DrawText("GREAT ENEMY FELLED", 50, 250, 60, Color.GOLD);
     }
 
     if (playerY == GROUND)
